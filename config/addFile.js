@@ -10,6 +10,7 @@ const code = [{
 		deleteFlag: "0",
 		operation: "yysb",
 		isMustfill: true,
+		placeholder: "请输入姓名",
 		show:true, //是否显隐
 		maxlength: 12
 	}, {

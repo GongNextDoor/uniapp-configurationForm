@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<gpp-configuration-form :formJson="formJson"></gpp-configuration-form>
+		<gpp-configuration-form :formJson="formJson" :isCard="true"></gpp-configuration-form>
 	</view>
 </template>
 
