@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<gpp-configuration-form ref="form" :formTemplate="formTemplate" :isCard="true" themeColor="#e48a5b"></gpp-configuration-form>
+		<gpp-configuration-form ref="form" :formTemplate="formTemplate" :isCard="true"></gpp-configuration-form>
 		<button class="button" @click="save">保 存</button>
 	</view>
 </template>
@@ -39,8 +39,7 @@
 <style>
 	.button{
 		margin: 14px 10px 10px 10px;
-		background-color: #e48a5b;
+		background-color: #6BA1FF;
 		color: #FFFFFF;
-		border-color: #e48a5b;
 	}
 </style>

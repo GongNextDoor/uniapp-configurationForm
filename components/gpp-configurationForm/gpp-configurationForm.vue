@@ -49,6 +49,28 @@
 							</checkbox-group>
 						</view>
 					</view>
+					<!-- date -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'date'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<picker mode="date" @change="datePickerChange($event, detailItem.textName)">
+								<view class="item-select">{{itemValue[detailItem.textName]}}</view>
+								<text class="item-ct-unit arrow-bottom" v-if="itemValue[detailItem.textName]==''"></text>
+								<text class="item-ct-unit" @click.stop="itemValue[detailItem.textName]=''" v-else>*</text>
+							</picker>
+						</view>
+					</view>
+					<!-- select -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'select'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<picker @change="selectPickerChange($event, detailItem.textName, detailItem.values)" :range="detailItem.values" range-key="valueName">
+								<view class="item-select">{{selectPickerItemShow(detailItem.values, itemValue[detailItem.textName])}}</view>
+								<text class="item-ct-unit arrow-bottom" v-if="itemValue[detailItem.textName]==''"></text>
+								<text class="item-ct-unit" @click.stop="itemValue[detailItem.textName]=''" v-else>*</text>
+							</picker>
+						</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -120,14 +142,6 @@
 				this.formTemplate.forEach(el => {
 					this.showItemIds.push(el.id);
 					el.object.forEach(el => {
-						if(el.controlType == "date"){ // 日期特殊处理
-							this.$set(this.itemValue, el.textName, "2000-01-01" ,el.show);
-							return true;
-						}
-						if(el.controlType == "select"){ // 单级选择特殊处理
-							this.$set(this.itemValue, el.textName, el.values[0].valueCode ,el.show);
-							return true;
-						}
 						this.$set(this.itemValue, el.textName, "" ,el.show);
 					});
 				});
@@ -159,9 +173,10 @@
 			 * 单级选择器修改
 			 * @param {Object} e
 			 * @param {Object} textName
+			 * @param {Object} values
 			 */
-			selectPickerChange(e, textName){
-				this.itemValue[textName] = this.currentItem.values[e.target.value].valueCode;
+			selectPickerChange(e, textName, values){
+				this.itemValue[textName] = values[e.target.value].valueCode;
 			},
 			/**
 			 * checkbox修改
@@ -303,10 +318,21 @@
 		.bottomShadow{
 			box-shadow: 0 2px 4px #d0cfcf;
 		}
-		input{
+		.arrow-bottom{
+			top: 11px !important;
+			content: " ";
+			height: 8px;
+			width: 8px;
+			border-width: 0 1px 1px 0;
+			border-color: #a0a0a0;
+			border-style: solid;
+			transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+		}
+		input, .item-select{
 			box-sizing: border-box;
 			width: 100%;
 			height: 36px;
+			line-height: 34px;
 			font-size: 14px;
 			padding: 0 8px;
 			border: 1px solid #e8e5e6;

@@ -58,46 +58,6 @@ const code = [{
 		show:true, //是否显隐
 		checkRegular: "^1[3456789]\\d{9}$"
 	}, {
-		textName: "emergencyName",
-		subject: "紧急联系人",
-		controlType: "text",
-		deleteFlag: "0",
-		operation: "yysb",
-		show:true, //是否显隐
-	}, {
-		textName: "emergencyPhone",
-		subject: "联系人电话",
-		controlType: "number",
-		deleteFlag: "0",
-		operation: "yysb",
-		show:true, //是否显隐
-		checkRegular: "^$|^1[3456789]\\d{9}$"
-	}, {
-		textName: "location",
-		subject: "所在地",
-		controlType: "multiSelector",
-		deleteFlag: "0",
-		isMustfill: true,
-		show:true, //是否显隐
-	}, {
-		textName: "countyCode",
-		subject: "区",
-		controlType: "multiSelectorHidden",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}, {
-		textName: "townCode",
-		subject: "镇",
-		controlType: "multiSelectorHidden",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}, {
-		textName: "villageCode",
-		subject: "村",
-		controlType: "multiSelectorHidden",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}, {
 		textName: "homeAddress",
 		subject: "详细地址",
 		controlType: "text",
