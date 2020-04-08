@@ -1,51 +1,53 @@
 <template>
 	<view class="gpp-cf">
 		<view class="gpp-cf-form" :class="{'bottomShadow':isCard}" v-for="(item, index) in formTemplate" :key="index">
-			<view class="gpp-cf-title"><text :class="showItemIds.indexOf(item.id)>-1 ? 'titleBeforeOpen':'titleBeforeClose'" :style="'background:'+themeColor"></text>{{item.tableName}}</view>
-			<view class="gpp-cf-content" v-for="(detailItem, detailIndex) in item.object" :key="detailIndex">
-				<!-- text -->
-				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'text'">
-					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-					<view class="item-content">
-						<input type="text" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
-						<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+			<view class="gpp-cf-title" @click="showItemClick(item)"><text :class="showItemIds.indexOf(item.id)>-1 ? 'titleBeforeOpen':'titleBeforeClose'" :style="'background:'+themeColor"></text>{{item.tableName}}</view>
+			<view class="gpp-cf-content" :class="{'hidden':showItemIds.indexOf(item.id)==-1}">
+				<view v-for="(detailItem, detailIndex) in item.object" :key="detailIndex">
+					<!-- text -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'text'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<input type="text" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
+							<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+						</view>
 					</view>
-				</view>
-				<!-- number -->
-				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'number'">
-					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-					<view class="item-content">
-						<input type="number" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
-						<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+					<!-- number -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'number'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<input type="number" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
+							<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+						</view>
 					</view>
-				</view>
-				<!-- html -->
-				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'html'">
-					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-					<view class="item-content">
-						{{itemValue[detailItem.textName]}}
+					<!-- html -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'html'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							{{itemValue[detailItem.textName]}}
+						</view>
 					</view>
-				</view>
-				<!-- radio -->
-				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'radio'">
-					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-					<view class="item-content">
-						<radio-group>
-							<label class="item-radio" v-for="(value, index) in detailItem.values" :key="index" @click="itemValue[detailItem.textName] = value.valueCode">
-								<radio :value="value.valueCode" :checked="itemValue[detailItem.textName] == value.valueCode"/>{{value.valueName}}
-							</label>
-						</radio-group>
+					<!-- radio -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'radio'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<radio-group>
+								<label class="item-radio" v-for="(value, index) in detailItem.values" :key="index" @click="itemValue[detailItem.textName] = value.valueCode">
+									<radio :value="value.valueCode" :checked="itemValue[detailItem.textName] == value.valueCode"/>{{value.valueName}}
+								</label>
+							</radio-group>
+						</view>
 					</view>
-				</view>
-				<!-- checkbox -->
-				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'checkbox'">
-					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-					<view class="item-content">
-						<checkbox-group @change="checkboxChange($event, detailItem.textName)">
-							<label class="item-checkbox" v-for="(value, index) in detailItem.values" :key="index">
-								<checkbox :value="value.valueCode" :checked="itemValue[detailItem.textName].indexOf(value.valueCode) > -1"/>{{value.valueName}}
-							</label>
-						</checkbox-group>
+					<!-- checkbox -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'checkbox'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<checkbox-group @change="checkboxChange($event, detailItem.textName)">
+								<label class="item-checkbox" v-for="(value, index) in detailItem.values" :key="index">
+									<checkbox :value="value.valueCode" :checked="itemValue[detailItem.textName].indexOf(value.valueCode) > -1"/>{{value.valueName}}
+								</label>
+							</checkbox-group>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -234,36 +236,39 @@
 		box-sizing: border-box;
 		.gpp-cf-form{
 			box-sizing: border-box;
-			padding: 10px;
+			padding-bottom: 10px;
 			background: #FFFFFF;
 			margin-bottom: 10px;
 			.gpp-cf-title{
-				margin-bottom: 16px;
+				position: relative;
+				padding: 10px 10px 10px 30px;
 				font-size: 16px;
 				.titleBeforeOpen{
+					transition: all 0.3s ease;
+					position: absolute;
+					left: 15px;
+					top: 13px;
 					content: "";
 					width: 4px;
 					height: 16px;
 					border-radius: 2px;
-					display: inline-block;
-					margin-left: 8px;
-					margin-right: 9px;
-					vertical-align: -2px;
 				}
 				.titleBeforeClose{
+					transition: all 0.3s ease;
+					position: absolute;
+					left: 8px;
+					top: 19px;
 					content: "";
 					width: 16px;
 					height: 4px;
 					border-radius: 2px;
-					display: inline-block;
-					margin-right: 5px;
-					vertical-align: 4px;
 				}
 			}
-			.gpp-cf-title:hover{
-				
+			.gpp-cf-title:active{
+				background-color: #f8f8f8;
 			}
 			.gpp-cf-content{
+				margin: 10px;
 				box-sizing: border-box;
 				font-size: 14px;
 				color: #777777;
@@ -274,9 +279,6 @@
 					}
 					.item-content{
 						position: relative;
-						.input-placeholder{
-							color: #d5d5d5;
-						}
 						.item-ct-unit{
 							position: absolute;
 							top: 8px;
@@ -286,6 +288,9 @@
 						}
 					}
 				}
+			}
+			.hidden{
+				display: none;
 			}
 		}
 		.gpp-cf-form:last-child{
@@ -306,6 +311,9 @@
 			padding: 0 8px;
 			border: 1px solid #e8e5e6;
 			border-radius: 8px;
+		}
+		.input-placeholder{
+			color: #d5d5d5;
 		}
 		radio-group, checkbox-group{
 			margin-top: 10px;
