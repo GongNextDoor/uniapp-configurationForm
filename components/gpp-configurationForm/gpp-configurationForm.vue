@@ -1,14 +1,51 @@
 <template>
 	<view class="gpp-cf">
-		<view class="gpp-cf-form" :class="{'bottomShadow': isCard}" v-for="(item, index) in formJson" :key="index">
-			<view class="gpp-cf-title">{{item.tableName}}</view>
-			<view class="gpp-cf-content">
-				<view v-for="(detailItem, detailIndex) in item.object" :key="detailIndex">
-					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'text'">
-						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-						<view>
-							<input type="text" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
-						</view>
+		<view class="gpp-cf-form" :class="{'bottomShadow':isCard}" v-for="(item, index) in formTemplate" :key="index">
+			<view class="gpp-cf-title"><text :class="showItemIds.indexOf(item.id)>-1 ? 'titleBeforeOpen':'titleBeforeClose'" :style="'background:'+themeColor"></text>{{item.tableName}}</view>
+			<view class="gpp-cf-content" v-for="(detailItem, detailIndex) in item.object" :key="detailIndex">
+				<!-- text -->
+				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'text'">
+					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+					<view class="item-content">
+						<input type="text" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
+						<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+					</view>
+				</view>
+				<!-- number -->
+				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'number'">
+					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+					<view class="item-content">
+						<input type="number" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
+						<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+					</view>
+				</view>
+				<!-- html -->
+				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'html'">
+					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+					<view class="item-content">
+						{{itemValue[detailItem.textName]}}
+					</view>
+				</view>
+				<!-- radio -->
+				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'radio'">
+					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+					<view class="item-content">
+						<radio-group>
+							<label class="item-radio" v-for="(value, index) in detailItem.values" :key="index" @click="itemValue[detailItem.textName] = value.valueCode">
+								<radio :value="value.valueCode" :checked="itemValue[detailItem.textName] == value.valueCode"/>{{value.valueName}}
+							</label>
+						</radio-group>
+					</view>
+				</view>
+				<!-- checkbox -->
+				<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'checkbox'">
+					<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+					<view class="item-content">
+						<checkbox-group @change="checkboxChange($event, detailItem.textName)">
+							<label class="item-checkbox" v-for="(value, index) in detailItem.values" :key="index">
+								<checkbox :value="value.valueCode" :checked="itemValue[detailItem.textName].indexOf(value.valueCode) > -1"/>{{value.valueName}}
+							</label>
+						</checkbox-group>
 					</view>
 				</view>
 			</view>
@@ -31,10 +68,16 @@
 					return false
 				}
 			},
-			formJson:{
+			formTemplate:{
 				type: Array,
 				default(){
 					return []
+				}
+			},
+			formValue:{
+				type: Object,
+				default(){
+					return {}
 				}
 			}
 		},
@@ -45,11 +88,142 @@
 				itemValue: {}
 			}
 		},
-		onLoad() {
-		
+		created() {
+			this.init();
 		},
 		methods: {
-		
+			/**
+			 * 处理ios键盘收回 界面不返回问题
+			 * @param {Object} e
+			 */
+			onInputBlur(e) {
+				if (isIOS) {
+					var currentPosition, timer;
+					var speed = 1;
+					timer = setInterval(function() {
+						currentPosition = document.documentElement.scrollTop || document.body.scrollTop;
+						currentPosition -= speed;
+						window.scrollTo(0, currentPosition); //页面向上滚动
+						currentPosition += speed;
+						window.scrollTo(0, currentPosition); //页面向下滚动
+						clearInterval(timer);
+					}, 100);
+				}
+			},
+			
+			/**
+			 * 初始化数据
+			 */
+			init(){
+				this.formTemplate.forEach(el => {
+					this.showItemIds.push(el.id);
+					el.object.forEach(el => {
+						if(el.controlType == "date"){ // 日期特殊处理
+							this.$set(this.itemValue, el.textName, "2000-01-01" ,el.show);
+							return true;
+						}
+						if(el.controlType == "select"){ // 单级选择特殊处理
+							this.$set(this.itemValue, el.textName, el.values[0].valueCode ,el.show);
+							return true;
+						}
+						this.$set(this.itemValue, el.textName, "" ,el.show);
+					});
+				});
+				// 如果传了初始值进行赋值
+				if(this.formValue != {}){
+					Object.assign(this.itemValue, this.formValue);
+				}
+			},
+			/**
+			 * 卡片显示影藏控制
+			 * @param {Object} item
+			 */
+			showItemClick(item){
+				if(this.showItemIds.indexOf(item.id) > -1){
+					this.showItemIds.splice(this.showItemIds.indexOf(item.id), 1);
+				}else{
+					this.showItemIds.push(item.id);
+				}
+			},
+			/**
+			 * 日期选择器修改
+			 * @param {Object} e
+			 * @param {Object} textName
+			 */
+			datePickerChange(e, textName){
+				this.itemValue[textName] = e.target.value;
+			},
+			/**
+			 * 单级选择器修改
+			 * @param {Object} e
+			 * @param {Object} textName
+			 */
+			selectPickerChange(e, textName){
+				this.itemValue[textName] = this.currentItem.values[e.target.value].valueCode;
+			},
+			/**
+			 * checkbox修改
+			 * @param {Object} e
+			 * @param {Object} textName
+			 */
+			checkboxChange(e, textName){
+				this.itemValue[textName] = e.target.value.toString();
+			},
+			/**
+			 * 单级select显示
+			 * @param {Object} objects
+			 * @param {Object} value
+			 */
+			selectPickerItemShow(objects, value){
+				let name = '';
+				objects.forEach(el => {
+					if(el.valueCode == value){
+						name = el.valueName;
+					}
+				});
+				return name;
+			},
+			/**
+			 * 输入校验
+			 */
+			inputValidation(){
+				let checkFlag = true;
+				let message = "校验成功";
+				let value = {};
+				
+				this.formTemplate.forEach(el => {
+					if(! checkFlag){
+						return false;
+					}
+					el.object.forEach(el => {
+						if(! checkFlag){
+							return false;
+						}
+						if(el.isMustfill && this.itemValue[el.textName] == ""){ //必填
+							message = "请输入"+el.subject;
+							checkFlag = false;
+							return false;
+						}
+						if(el.checkRegular){ //正则
+							let reg = new RegExp(el.checkRegular);
+							if(! reg.test(this.itemValue[el.textName])){
+								message = el.subject+"输入不合法";
+								checkFlag = false;
+								return false;
+							}
+						}
+					});
+				});
+				
+				if(checkFlag){ value = this.itemValue; }
+				return {checkFlag: checkFlag, message: message, value: value};
+			},
+			/**
+			 * 暴露的提交方法
+			 */
+			submit(){
+				return this.inputValidation();
+			}
 		}
 	}
 </script>
@@ -66,16 +240,28 @@
 			.gpp-cf-title{
 				margin-bottom: 16px;
 				font-size: 16px;
+				.titleBeforeOpen{
+					content: "";
+					width: 4px;
+					height: 16px;
+					border-radius: 2px;
+					display: inline-block;
+					margin-left: 8px;
+					margin-right: 9px;
+					vertical-align: -2px;
+				}
+				.titleBeforeClose{
+					content: "";
+					width: 16px;
+					height: 4px;
+					border-radius: 2px;
+					display: inline-block;
+					margin-right: 5px;
+					vertical-align: 4px;
+				}
 			}
-			.gpp-cf-title:before{
-				content: "";
-				width: 4px;
-				height: 16px;
-				border-radius: 2px;
-				background: #e38b5b;
-				display: inline-block;
-				margin-right: 5px;
-				vertical-align: -2px;
+			.gpp-cf-title:hover{
+				
 			}
 			.gpp-cf-content{
 				box-sizing: border-box;
@@ -86,11 +272,24 @@
 					.item-name{
 						margin-bottom: 3px;
 					}
-					.input-placeholder{
-						color: #d5d5d5;
+					.item-content{
+						position: relative;
+						.input-placeholder{
+							color: #d5d5d5;
+						}
+						.item-ct-unit{
+							position: absolute;
+							top: 8px;
+							right: 10px;
+							font-size: 14px;
+							color: #d5d5d5;
+						}
 					}
 				}
 			}
+		}
+		.gpp-cf-form:last-child{
+			margin-bottom: 0;
 		}
 		
 		.red{
@@ -107,6 +306,12 @@
 			padding: 0 8px;
 			border: 1px solid #e8e5e6;
 			border-radius: 8px;
+		}
+		radio-group, checkbox-group{
+			margin-top: 10px;
+		}
+		.item-radio, .item-checkbox{
+			margin-right: 14px;
 		}
 	}
 </style>

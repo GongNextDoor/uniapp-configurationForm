@@ -326,36 +326,6 @@ const code = [{
 		deleteFlag: "0",
 		show:true, //是否显隐
 	}]
-}, {
-	tableName: "其他证明资料",
-	id: "469823830580371203",
-	deleteFlag: "0",
-	isExpandable: true,
-	object: [{
-		textName: "fileImages",
-		controlType: "file",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}]
-}, {
-	tableName: "其他信息",
-	id: "469823830580382314",
-	deleteFlag: "0",
-	isExpandable: true,
-	justShow: true,
-	object: [{
-		textName: "createTime",
-		subject: "建档时间",
-		controlType: "otherInfoTime",
-		deleteFlag: "0",
-		show:true
-	}, {
-		textName: "createByName",
-		subject: "建档医生",
-		controlType: "otherInfo",
-		deleteFlag: "0",
-		show:true
-	}]
 }];
 
 export default code;
