@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<gpp-configuration-form ref="form" :formTemplate="formTemplate" :isCard="true"></gpp-configuration-form>
+		<gpp-configuration-form ref="form" type="fill" :formTemplate="formTemplate" :formValue="formValue" :isCard="true"></gpp-configuration-form>
 		<button class="button" @click="save">保 存</button>
 	</view>
 </template>
@@ -15,6 +15,12 @@
 		data() {
 			return {
 				formTemplate: template,
+				formValue: {
+					patientName: "张三",
+					isGotoWH: "1",
+					gender: "1",
+					symptom: "1,4"
+				}
 			}
 		},
 		methods: {

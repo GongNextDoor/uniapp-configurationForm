@@ -8,7 +8,7 @@
 					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'text'">
 						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
 						<view class="item-content">
-							<input type="text" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
+							<input type="text" :disabled="type=='show'" :placeholder="type=='show'?'':detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
 							<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
 						</view>
 					</view>
@@ -16,15 +16,21 @@
 					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'number'">
 						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
 						<view class="item-content">
-							<input type="number" :placeholder="detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
+							<input type="number" :disabled="type=='show'" :placeholder="type=='show'?'':detailItem.placeholder" :maxlength="detailItem.maxlength" v-model="itemValue[detailItem.textName]"/>
 							<text class="item-ct-unit" v-if="detailItem.unit">{{detailItem.unit}}</text>
+						</view>
+					</view>
+					<!-- textarea -->
+					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'textarea'">
+						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
+						<view class="item-content">
+							<textarea :disabled="type=='show'" :placeholder="type=='show'?'':detailItem.placeholder" :maxlength="detailItem.maxlength" auto-height v-model="itemValue[detailItem.textName]"/>
 						</view>
 					</view>
 					<!-- html -->
 					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'html'">
-						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
-						<view class="item-content">
-							{{itemValue[detailItem.textName]}}
+						<view class="item-content" :style="'color:'+detailItem.fontColor+';font-size:'+detailItem.fontSize">
+							{{detailItem.content}}
 						</view>
 					</view>
 					<!-- radio -->
@@ -33,7 +39,7 @@
 						<view class="item-content">
 							<radio-group>
 								<label class="item-radio" v-for="(value, index) in detailItem.values" :key="index" @click="itemValue[detailItem.textName] = value.valueCode">
-									<radio :value="value.valueCode" :checked="itemValue[detailItem.textName] == value.valueCode"/>{{value.valueName}}
+									<radio :disabled="type=='show'" :value="value.valueCode" :checked="itemValue[detailItem.textName] == value.valueCode"/>{{value.valueName}}
 								</label>
 							</radio-group>
 						</view>
@@ -44,7 +50,7 @@
 						<view class="item-content">
 							<checkbox-group @change="checkboxChange($event, detailItem.textName)">
 								<label class="item-checkbox" v-for="(value, index) in detailItem.values" :key="index">
-									<checkbox :value="value.valueCode" :checked="itemValue[detailItem.textName].indexOf(value.valueCode) > -1"/>{{value.valueName}}
+									<checkbox :disabled="type=='show'" :value="value.valueCode" :checked="itemValue[detailItem.textName].indexOf(value.valueCode) > -1"/>{{value.valueName}}
 								</label>
 							</checkbox-group>
 						</view>
@@ -53,22 +59,32 @@
 					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'date'">
 						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
 						<view class="item-content">
-							<picker mode="date" @change="datePickerChange($event, detailItem.textName)">
+							<view v-if="type=='fill'">
+								<picker mode="date" @change="datePickerChange($event, detailItem.textName)">
+									<view class="item-select">{{itemValue[detailItem.textName]}}</view>
+									<text class="item-ct-unit arrowBottom" v-if="itemValue[detailItem.textName]==''"></text>
+									<text class="item-ct-unit fork" @click.stop="itemValue[detailItem.textName]=''" v-else></text>
+								</picker>
+							</view>
+							<view v-else>
 								<view class="item-select">{{itemValue[detailItem.textName]}}</view>
-								<text class="item-ct-unit arrow-bottom" v-if="itemValue[detailItem.textName]==''"></text>
-								<text class="item-ct-unit" @click.stop="itemValue[detailItem.textName]=''" v-else>*</text>
-							</picker>
+							</view>
 						</view>
 					</view>
 					<!-- select -->
 					<view class="gpp-cf-content-item" v-if="detailItem.controlType == 'select'">
 						<view class="item-name"><text class="red" v-if="detailItem.isMustfill">*</text>{{detailItem.subject}}</view>
 						<view class="item-content">
-							<picker @change="selectPickerChange($event, detailItem.textName, detailItem.values)" :range="detailItem.values" range-key="valueName">
+							<view v-if="type=='fill'">
+								<picker @change="selectPickerChange($event, detailItem.textName, detailItem.values)" :range="detailItem.values" range-key="valueName">
+									<view class="item-select">{{selectPickerItemShow(detailItem.values, itemValue[detailItem.textName])}}</view>
+									<text class="item-ct-unit arrowBottom" v-if="itemValue[detailItem.textName]==''"></text>
+									<text class="item-ct-unit fork" @click.stop="itemValue[detailItem.textName]=''" v-else></text>
+								</picker>
+							</view>
+							<view v-else>
 								<view class="item-select">{{selectPickerItemShow(detailItem.values, itemValue[detailItem.textName])}}</view>
-								<text class="item-ct-unit arrow-bottom" v-if="itemValue[detailItem.textName]==''"></text>
-								<text class="item-ct-unit" @click.stop="itemValue[detailItem.textName]=''" v-else>*</text>
-							</picker>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -102,6 +118,12 @@
 				type: Object,
 				default(){
 					return {}
+				}
+			},
+			type:{
+				type: String,
+				default(){
+					return "fill"
 				}
 			}
 		},
@@ -142,7 +164,9 @@
 				this.formTemplate.forEach(el => {
 					this.showItemIds.push(el.id);
 					el.object.forEach(el => {
-						this.$set(this.itemValue, el.textName, "" ,el.show);
+						if(el.textName){
+							this.$set(this.itemValue, el.textName, "");
+						}
 					});
 				});
 				// 如果传了初始值进行赋值
@@ -288,7 +312,7 @@
 				font-size: 14px;
 				color: #777777;
 				.gpp-cf-content-item{
-					margin-bottom: 10px;
+					margin-bottom: 16px;
 					.item-name{
 						margin-bottom: 3px;
 					}
@@ -318,7 +342,7 @@
 		.bottomShadow{
 			box-shadow: 0 2px 4px #d0cfcf;
 		}
-		.arrow-bottom{
+		.arrowBottom{
 			top: 11px !important;
 			content: " ";
 			height: 8px;
@@ -327,6 +351,27 @@
 			border-color: #a0a0a0;
 			border-style: solid;
 			transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+		}
+		.fork{
+			width: 14px;
+			height: 14px;
+			margin: auto;
+			position: relative;
+		}
+		.fork:before, .fork:after{
+			content: "";
+			position: absolute;
+			height: 14px;
+			width: 1.5px;
+			top: 3px;
+			right: 4px;
+			background: #a0a0a0;
+		}
+		.fork:before{
+		  transform: rotate(45deg);
+		}
+		.fork:after{
+		  transform: rotate(-45deg);
 		}
 		input, .item-select{
 			box-sizing: border-box;
@@ -338,11 +383,20 @@
 			border: 1px solid #e8e5e6;
 			border-radius: 8px;
 		}
-		.input-placeholder{
+		textarea{
+			box-sizing: border-box;
+			width: 100%;
+			min-height: 90px;
+			font-size: 14px;
+			padding: 8px;
+			border: 1px solid #e8e5e6;
+			border-radius: 8px;
+		}
+		.input-placeholder, .textarea-placeholder{
 			color: #d5d5d5;
 		}
 		radio-group, checkbox-group{
-			margin-top: 10px;
+			margin-top: 8px;
 		}
 		.item-radio, .item-checkbox{
 			margin-right: 14px;

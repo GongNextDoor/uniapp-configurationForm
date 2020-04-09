@@ -1,212 +1,105 @@
 const code = [{
 	tableName: "基本信息",
 	id: "469823830580379648",
-	deleteFlag: "0",
-	isExpandable: true,
 	object: [{
 		textName: "patientName",
 		subject: "姓名",
 		controlType: "text",
-		deleteFlag: "0",
-		operation: "yysb",
 		isMustfill: true,
-		placeholder: "请输入姓名",
-		show:true, //是否显隐
 		maxlength: 12
 	}, {
 		textName: "citizenId",
 		subject: "身份证",
 		controlType: "text",
-		deleteFlag: "0",
-		operation: "sfzsm",
 		isMustfill: true,
-		show:true, //是否显隐
 		checkRegular: "(^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$)"
 	}, {
-		textName: "patientBirthDate",
-		subject: "出生日期",
-		controlType: "date",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}, {
-		textName: "patientGender",
+		textName: "gender",
 		subject: "性别",
 		controlType: "select",
-		deleteFlag: "0",
 		isMustfill: true,
-		show:true, //是否显隐
 		values: [{
 			valueName: "男",
-			deleteFlag: "0",
 			valueCode: "1"
 		}, {
 			valueName: "女",
-			deleteFlag: "0",
 			valueCode: "2"
-		}, {
-			valueName: "未知",
-			deleteFlag: "0",
-			valueCode: "0"
 		}]
 	}, {
 		textName: "phoneNumber",
 		subject: "手机号码",
 		controlType: "number",
-		deleteFlag: "0",
-		operation: "yysb",
 		isMustfill: true,
-		show:true, //是否显隐
 		checkRegular: "^1[3456789]\\d{9}$"
 	}, {
 		textName: "homeAddress",
-		subject: "详细地址",
-		controlType: "text",
-		deleteFlag: "0",
-		operation: "yysb",
-		show:true, //是否显隐
-		maxlength: 36
+		subject: "详细居住地址",
+		controlType: "textarea",
+		placeholder: "请详细到居住门牌号码"
 	}]
 }, {
-	tableName: "参保信息",
-	id: "46982383058086952",
-	deleteFlag: "0",
-	isExpandable: true,
+	tableName: "疫情调查问卷",
+	id: "469823830580869523",
 	object: [{
-		textName: "isNcms",
-		subject: "是否是新农合参保居民",
-		controlType: "radio",
-		deleteFlag: "0",
+		textName: "temperature",
+		subject: "当前体温",
+		controlType: "number",
 		isMustfill: true,
-		show:true, //是否显隐
+		unit: "℃"
+	}, {
+		textName: "isGotoWH",
+		subject: "近两月是否有武汉旅行史",
+		controlType: "radio",
+		isMustfill: true,
 		values: [{
 			valueName: "是",
-			deleteFlag: "0",
 			valueCode: "1"
 		}, {
 			valueName: "否",
-			deleteFlag: "0",
 			valueCode: "0"
 		}]
 	}, {
-		textName: "ncmsCode",
-		subject: "新农合卡号",
-		controlType: "text",
-		deleteFlag: "0",
-		operation: "yysb",
-		checkRegular: "^$|^\\d{16,18}$|^\\d{16,17}[x]$",
-		show:false, //根据新农合选取显隐
-		maxlength: 18
-	}]
-}, {
-	tableName: "健康信息",
-	id: "469823830580379759",
-	deleteFlag: "0",
-	isExpandable: true,
-	object: [{
-		textName: "height",
-		subject: "身高",
-		controlType: "number",
-		unit: "cm",
-		deleteFlag: "0",
+		textName: "gotoWHDate",
+		subject: "如有请填写旅行日期",
+		controlType: "date"
+	}, {
+		textName: "contactPatient",
+		subject: "近两月是否接触发热患者",
+		controlType: "radio",
 		isMustfill: true,
-		show:true, //是否显隐
-		checkRegular: "^[1-9](\\.\\d*)?$|^[1-9][0-9](\\.\\d*)?$|^[1-2][0-9][0-9](\\.\\d*)?$",
-		maxlength: 3
-	}, {
-		textName: "weight",
-		subject: "体重",
-		controlType: "number",
-		unit: "kg",
-		deleteFlag: "0",
-		isMustfill: true,
-		show:true, //是否显隐
-		checkRegular: "^[1-9](\\.\\d*)?$|^[1-9][0-9](\\.\\d*)?$|^[1-2][0-9][0-9](\\.\\d*)?$",
-		maxlength: 3
-	}, {
-		textName: "waist",
-		subject: "腰围",
-		controlType: "number",
-		unit: "cm",
-		deleteFlag: "0",
-		isMustfill: true,
-		show:true, //是否显隐
-		checkRegular: "^[1-9](\\.\\d*)?$|^[1-9][0-9](\\.\\d*)?$|^[1-2][0-9][0-9](\\.\\d*)?$",
-		maxlength: 3
-	}, {
-		textName: "bmi",
-		subject: "体重指数",
-		controlType: "html",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}, {
-		textName: "bmiRange",
-		subject: "BMI指数范围",
-		controlType: "select",
-		deleteFlag: "0",
-		show:true, //是否显隐
-		disabled: true,
-		textClass: "red",
 		values: [{
-			valueName: "过轻",
-			deleteFlag: "0",
-			valueCode: "0"
-		}, {
-			valueName: "正常",
-			deleteFlag: "0",
+			valueName: "是",
 			valueCode: "1"
 		}, {
-			valueName: "过重",
-			deleteFlag: "0",
+			valueName: "否",
+			valueCode: "0"
+		}]
+	}, {
+		textName: "symptom",
+		subject: "当前是否有以下症状，如有请选择",
+		controlType: "checkbox",
+		values: [{
+			valueName: "发热",
+			valueCode: "1"
+		}, {
+			valueName: "咳嗽",
 			valueCode: "2"
 		}, {
-			valueName: "肥胖",
-			deleteFlag: "0",
+			valueName: "胸闷",
 			valueCode: "3"
 		}, {
-			valueName: "非常肥胖",
-			deleteFlag: "0",
+			valueName: "四肢无力",
 			valueCode: "4"
 		}]
 	}]
 }, {
-	tableName: "既往病史",
-	id: "469823830580379870",
-	deleteFlag: "0",
-	isExpandable: true,
-	object: [{
-		textName: "pastHistory",
-		controlType: "checkbox",
-		deleteFlag: "0",
-		show:true, //是否显隐
-		values: [{
-			valueName: "高血压",
-			deleteFlag: "0",
-			valueCode: "1"
-		}, {
-			valueName: "糖尿病",
-			deleteFlag: "0",
-			valueCode: "2"
-		}]
-	}]
-}, {
-	tableName: "血糖",
+	tableName: "调查说明",
 	id: "469823830580371092",
-	deleteFlag: "0",
-	isExpandable: true,
 	object: [{
-		textName: "fbs",
-		subject: "空腹血糖",
-		controlType: "number",
-		unit: "mmol/L",
-		deleteFlag: "0",
-		show:true, //是否显隐
-	}, {
-		textName: "pbg",
-		subject: "餐后血糖",
-		controlType: "number",
-		unit: "mmol/L",
-		deleteFlag: "0",
-		show:true, //是否显隐
+		controlType: "html",
+		fontSize: "16px",
+		fontColor: "#f55347",
+		content: "以上问卷信息仅供防疫工作使用，为了您和他人的身体健康，请认真如实填写，我们会最大限度保护填写人个人信息不被泄露，谢谢您的合作！"
 	}]
 }];
 
