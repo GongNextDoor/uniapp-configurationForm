@@ -1,7 +1,7 @@
 <template>
 	<view class="gpp-cf">
 		<view class="gpp-cf-form" :class="{'bottomShadow':isCard}" v-for="(item, index) in formTemplate" :key="index">
-			<view class="gpp-cf-title" @click="showItemClick(item)"><text :class="showItemIds.indexOf(item.id)>-1 ? 'titleBeforeOpen':'titleBeforeClose'" :style="'background:'+themeColor"></text>{{item.tableName}}</view>
+			<view class="gpp-cf-title" @click="showItemClick(item)"><text :class="showItemIds.indexOf(item.id)>-1 ? 'titleBeforeOpen':'titleBeforeClose'" :style="'background:'+themeColor"></text>{{item.formTitle}}</view>
 			<view class="gpp-cf-content" :class="{'hidden':showItemIds.indexOf(item.id)==-1}">
 				<view v-for="(detailItem, detailIndex) in item.object" :key="detailIndex">
 					<!-- text -->
@@ -130,8 +130,12 @@
 		data() {
 			return {
 				showItemIds: [],
-				currentItem: {},
 				itemValue: {}
+			}
+		},
+		watch:{
+			formTemplate:function(){
+				this.init();
 			}
 		},
 		created() {
@@ -379,7 +383,7 @@
 			height: 36px;
 			line-height: 34px;
 			font-size: 14px;
-			padding: 0 8px;
+			padding: 0 40px 0 8px;
 			border: 1px solid #e8e5e6;
 			border-radius: 8px;
 		}

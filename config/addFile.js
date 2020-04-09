@@ -1,5 +1,5 @@
 const code = [{
-	tableName: "基本信息",
+	formTitle: "基本信息",
 	id: "469823830580379648",
 	object: [{
 		textName: "patientName",
@@ -38,7 +38,7 @@ const code = [{
 		placeholder: "请详细到居住门牌号码"
 	}]
 }, {
-	tableName: "疫情调查问卷",
+	formTitle: "疫情调查问卷",
 	id: "469823830580869523",
 	object: [{
 		textName: "temperature",
@@ -93,7 +93,7 @@ const code = [{
 		}]
 	}]
 }, {
-	tableName: "调查说明",
+	formTitle: "调查说明",
 	id: "469823830580371092",
 	object: [{
 		controlType: "html",
