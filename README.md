@@ -64,7 +64,7 @@ export default {
 | submit | 提交 | {checkFlag: true, message: "", value: {}} |
 #### 表单配置数据说明
 完整配置示例
-```json
+```javascript
 [{
 	formTitle: "表单配置示例",
 	id: "469823830580379648",
