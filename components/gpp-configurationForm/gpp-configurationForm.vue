@@ -379,7 +379,7 @@
 			height: 36px;
 			line-height: 34px;
 			font-size: 14px;
-			padding: 0 8px;
+			padding: 0 40px 0 8px;
 			border: 1px solid #e8e5e6;
 			border-radius: 8px;
 		}
